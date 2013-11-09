@@ -4,6 +4,7 @@ Handles joy stick communication to roomba
 
 import imp
 import json
+from os.path import join
 from collections import namedtuple
 
 import amqp
@@ -24,7 +25,7 @@ def main(host=HOST, drive_queue=DRIVE_QUEUE, device=DEVICE):
 
     # maybe add controller callibration??
     device = evdev.device.InputDevice(device) # get evdev device
-    config = imp.load_source(CONFIG, CONFIG)
+    config = imp.load_source(join('configs', CONFIG), CONFIG)
 
     state = ROBOT(0, 0, START)
     for event in device.read_loop():
