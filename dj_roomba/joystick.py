@@ -5,15 +5,15 @@ Handles joy stick communication to roomba
 import imp
 import json
 from os.path import join
-from collections import namedtuple
 
 import amqp
 import evdev
 
+from .commands import ROBOT
+
 HOST = 'localhost'
 DRIVE_QUEUE = 'drive'
 DEVICE = '/dev/input/event13'
-ROBOT = namedtuple('Robot', 'drive speed mode')
 START, SAFE, FULL = range(3)
 CONFIG = 'controller.cfg'
 

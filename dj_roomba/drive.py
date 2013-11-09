@@ -4,6 +4,8 @@ from roomba.roomba import Create, RoombaError
 import amqp
 import json
 
+import logging
+
 HOST = 'localhost'
 DRIVE_QUEUE = 'drive'
 
@@ -12,7 +14,6 @@ def drive(roomba, message):
         msg = json.loads(message.body)
         try:
             cmd, args = msg[0], msg[1:]
-            print(cmd, args)
             getattr(roomba, cmd)(*args)  # Tell roomba what to do
         except AttributeError:
             pass  # should log bad msg
@@ -23,8 +24,9 @@ def drive(roomba, message):
         except RoombaError:
             pass
     except ValueError:
-        """This means the json failed to decode correctly
-        Should be logged"""
+        #This means the json failed to decode correctly
+        #Should be logged
+        pass
 
 
 def main():
@@ -37,6 +39,6 @@ def main():
 
     while channel.callbacks:
         channel.wait()
-    
+
 if __name__ == '__main__':
     main()
