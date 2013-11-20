@@ -1,5 +1,6 @@
 from collections import namedtuple
 
+START, SAFE, FULL = range(3)
 ROBOT = namedtuple('Robot', 'drive speed')
 
 def noop(state, _):
@@ -17,3 +18,7 @@ def control(state, val):
     if val == 0:
         return noop(state, val)
     return ('control',), ROBOT(0, 0)
+
+EVENT_TO_ACTION = {
+    'hat_0x': turn,
+}    
