@@ -39,6 +39,3 @@ def main():
 
     while channel.callbacks:
         channel.wait()
-
-if __name__ == '__main__':
-    main()
