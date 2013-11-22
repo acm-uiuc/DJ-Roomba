@@ -15,6 +15,13 @@ HOST = 'localhost'
 DRIVE_QUEUE = 'drive'
 DEVICE = '/dev/input/event13'
 
+def messages(events, config):
+    state = ROBOT(0, START)
+    for code, value in events:
+        command, state = EVENT_TO_ACTION[code](state, value)
+        yield amqp.Message(json.dumps(command))
+    
+
 def main(host=HOST, drive_queue=DRIVE_QUEUE, device=DEVICE):
     """Creates connection to amqp on HOST to channel DRIVE, """
     parser = ArgumentParser()
@@ -29,11 +36,10 @@ def main(host=HOST, drive_queue=DRIVE_QUEUE, device=DEVICE):
     config = json.load(args.config)
     args.config.close()
 
-    state = ROBOT(0, START)
-    for event in device.read_loop():
-        code, value = config[str(event.code)], event.value
-        if code in EVENT_TO_ACTION:
-            command, state = EVENT_TO_ACTION[code](state, value)
-            msg = amqp.Message(json.dumps(command))
-            channel.basic_publish(msg, routing_key=drive_queue)
+    events = ((config[str(event.code)], event.value) for event
+              in device.read_loop())
+    events = (event for event in events if event[0] in EVENT_TO_ACTION)
+    for msg in messages(events, config):
+        print(msg)
+        channel.basic_publish(msg, routing_key=drive_queue)
 

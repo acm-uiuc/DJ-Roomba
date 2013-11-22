@@ -21,4 +21,5 @@ def control(state, val):
 
 EVENT_TO_ACTION = {
     'hat_0x': turn,
+    'hat_0y': drive_straight,
 }    
