@@ -14,8 +14,9 @@ setup(
     install_requires=['pyroomba', 'amqp', 'evdev'],
     entry_points= {
         'console_scripts': [
-            'roomba_drive = dj_roomba.drive:main',
+            'roomba_drive = dj_roomba.rdrive:main',
             'roomba_joystick = dj_roomba.joystick:main',
+            'turrent-drive = dj_roomba.tdrive:main', 
         ]
     },
     data_files = [('configs', ['configs/ps4.json'])],
