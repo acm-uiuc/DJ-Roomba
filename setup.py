@@ -11,7 +11,7 @@ setup(
     license='LICENSE',
     description='',
     long_description=open('README.md').read(),
-    install_requires=['pyroomba', 'amqp', 'evdev'],
+    install_requires=['pyroomba', 'amqp', 'evdev', 'pyusb'],
     entry_points= {
         'console_scripts': [
             'roomba_drive = dj_roomba.rdrive:main',
