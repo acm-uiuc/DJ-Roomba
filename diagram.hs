@@ -23,11 +23,6 @@ subsystemNames = [driveR, joystick, lcd, sensorR, sensorT, turret]
 drivers = [driveR, driveT, driveA]
 sensors = [sensorR, sensorT, sensorA]
 
-arrows = zip (repeat joystick) (map qName drivers) 
-         ++ zip (map qName sensors) (repeat lcd)
-         ++ [(joystick, displayQ ), (displayQ, lcd)]
-         where 
-
 node :: String -> Diagram B R2
 node name = text name # scale 0.05 # fc white
             <> circle 0.2 # fc green # named name
@@ -40,19 +35,25 @@ queueH name = scale 0.04 (text name) === strutY 0.04 === (centerXY queueH')
 
 queueV name = rotateBy (1/4) $ queueH name
 
-directQ name = vcat [node name, strutY 0.2, queueV (qName')]
-          # connectOutside' (with & tailSize .~ 0.05
+myConnect = connectOutside' (with & tailSize .~ 0.05
                              & headSize  .~ 0.1
-                             & shaftStyle %~ lw 0.001 ) name qName'
+                             & shaftStyle %~ lw 0.001 )
+
+directQ isProducer name = vcat [node name, strutY 0.2, queueV (qName')]
+                          # if isProducer
+                            then myConnect name qName'
+                            else myConnect qName' name
           where qName' = qName name
 
-subsystemGroup names = hcat $ intersperse (strutX 0.1) (map directQ names)
+subsystemGroup names isProducer = hcat $ intersperse (strutX 0.1) 
+                                  (map (directQ isProducer) names)
 
 joystickLCD = centerXY $ queueH displayQ === strutY 0.2 ===
               centerXY (node joystick ||| strutX 0.2 ||| node lcd) 
-uiGroup = joystickLCD <> square 1 # dashing [0.2,0.05] 0
 
-subsystems = centerXY $ subsystemGroup drivers ||| strutX 0.5 ||| subsystemGroup sensors
+uiGroup = joystickLCD <> square 1.15 # dashing [0.2,0.05] 0
+
+subsystems = centerXY $ subsystemGroup drivers False ||| strutX 0.5 ||| subsystemGroup sensors True
 
 world :: Diagram B R2
 world = (subsystems === strutY 0.3 === uiGroup)
@@ -60,5 +61,8 @@ world = (subsystems === strutY 0.3 === uiGroup)
        where myConnect = connectOutside' (with & tailSize .~ 0.05
                                           & headSize  .~ 0.1
                                           & shaftStyle %~ lw 0.001 )
+             arrows = zip (repeat joystick) (map qName drivers) 
+                      ++ zip (map qName sensors) (repeat lcd)
+                      ++ [(joystick, displayQ ), (displayQ, lcd)]
 
 main = mainWith world
