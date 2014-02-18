@@ -33,7 +33,7 @@ queueH name = scale 0.04 (text name) === strutY 0.04 === (centerXY queueH')
                                # scaleY (1/4) # scaleX (1/20) 
                                # named name
 
-queueV name = rotateBy (1/4) $ queueH name
+queueV name = centerXY $ rotateBy (1/4) $ queueH name
 
 myConnect = connectOutside' (with & tailSize .~ 0.05
                              & headSize  .~ 0.1
