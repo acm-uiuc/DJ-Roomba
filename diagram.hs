@@ -5,41 +5,59 @@ import Diagrams.Backend.Cairo.CmdLine
 import Data.List
 
 driveR = "roomba drive"
+driveT = "turret drive"
+driveA = "audio drive"
+
+sensorR = "roomba sensor"
+sensorT = "turret sensor"
+sensorA = "audio sensor"
+
 joystick = "joystick"
 lcd = "lcd"
 turret = "turret"
-sensorR = "roomba sensor"
-sensorT = "turret sensor"
+
+displayQ = "display.queue"
 
 subsystemNames = [driveR, joystick, lcd, sensorR, sensorT, turret]
-arrows = [(joystick, driveR)
-         ,(joystick, lcd)
-         ,(joystick, turret)
-         ,(sensorR, lcd)
-         ,(sensorT, lcd)]
+drivers = [driveR, driveT, driveA]
+sensors = [sensorR, sensorT, sensorA]
+
+arrows = queuesToNode drivers joystick
+         ++ queuesToNode sensors lcd
+         ++ [(joystick, displayQ ), (displayQ, lcd)]
+         where qName = (++ "queue")
+               queuesToNode queues node = zip (map qName queues) (repeat node)
 
 node :: String -> Diagram B R2
-node name = text name # scale 0.1 # fc white
-         <> circle 0.2 # fc green # named name
+node name = text name # scale 0.05 # fc white
+            <> circle 0.2 # fc green # named name
 
-queueH = hcat (replicate 5 (square 1 # fc blue)) 
-         # translate (r2 (-2, 0))
-         # scaleY (1/4) # scaleX (1/20) 
+queueH name = hcat (replicate 5 (square 1 # fc blue)) 
+              # translate (r2 (-2, 0))
+              # scaleY (1/4) # scaleX (1/20) 
+              # named name
 
-queueV = rotateBy (1/4) queueH
+queueV name = rotateBy (1/4) $ queueH name
 
-directQ = vcat [node "x", strutY 0.2, queueV]
+directQ name = vcat [node name, strutY 0.2, queueV (qName)]
+          # connectOutside' (with & tailSize .~ 0.05
+                             & headSize  .~ 0.1
+                             & shaftStyle %~ lw 0.001 ) name qName
+          where qName = name ++ "queue"
 
-subsystemGroup n = hcat $ intersperse (strutX 0.1) (replicate n directQ)
+subsystemGroup names = hcat $ intersperse (strutX 0.1) (map directQ names)
 
-joystickLCD = (node joystick === strutY 0.2 === node lcd) 
-              # translate (r2 (0, 0.3)) ||| queueV
-uiGroup =  (joystickLCD <> square 1 # dashing [0.2,0.05] 0)
-           # translate (r2 (1.5, 0))
+joystickLCD = centerXY $ queueV displayQ === strutY 0.2 ===
+              centerXY (node joystick ||| strutX 0.2 ||| node lcd) 
+uiGroup = joystickLCD <> square 1 # dashing [0.2,0.05] 0
 
-subsystems = subsystemGroup 3 ||| strutX 0.5 ||| subsystemGroup 3 
+subsystems = centerXY $ subsystemGroup drivers ||| strutX 0.5 ||| subsystemGroup sensors
 
-example :: Diagram B R2
-example = subsystems === strutY 0.3 === uiGroup
+world :: Diagram B R2
+world = subsystems === strutY 0.3 === uiGroup
 
-main = mainWith $ example
+main = mainWith $ world
+       # applyAll [myConnect x y | (x,y) <- arrows]
+       where myConnect = connectOutside' (with & tailSize .~ 0.05
+                                          & headSize  .~ 0.1
+                                          & shaftStyle %~ lw 0.001 )
