@@ -16,7 +16,7 @@ setup(
         'console_scripts': [
             'roomba_drive = dj_roomba.rdrive:main',
             'roomba_joystick = dj_roomba.joystick:main',
-            'turrent-drive = dj_roomba.tdrive:main', 
+            'turrent_drive = dj_roomba.tdrive:main', 
         ]
     },
     data_files = [('configs', ['configs/ps4.json'])],

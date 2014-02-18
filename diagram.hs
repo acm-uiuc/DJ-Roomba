@@ -23,10 +23,10 @@ subsystemNames = [driveR, joystick, lcd, sensorR, sensorT, turret]
 drivers = [driveR, driveT, driveA]
 sensors = [sensorR, sensorT, sensorA]
 
-arrows = queuesToNode drivers joystick
-         ++ queuesToNode sensors lcd
+arrows = zip (repeat joystick) (map qName drivers) 
+         ++ zip (map qName sensors) (repeat lcd)
          ++ [(joystick, displayQ ), (displayQ, lcd)]
-         where queuesToNode queues node = zip (map qName queues) (repeat node)
+         where 
 
 node :: String -> Diagram B R2
 node name = text name # scale 0.05 # fc white
