@@ -1,41 +1,22 @@
-from functools import partial
 from roomba.controllers import BluetoothController, PyRobotControllerError
 from roomba.roomba import Create, RoombaError
-import amqp
-import json
+from .drive import Driver
 
-import logging
-
-HOST = 'localhost'
 DRIVE_QUEUE = 'drive'
+ROOMBA_ADDRESS = '00:0A:3A:2E:C9:BB'
 
-def drive(roomba, message):
+def callback(roomba:Create, cmd:str, *args) -> "IO ()":
     try:
-        msg = json.loads(message.body)
-        try:
-            cmd, args = msg[0], msg[1:]
-            getattr(roomba, cmd)(*args)  # Tell roomba what to do
-        except AttributeError:
-            pass  # should log bad msg
-        except TypeError:
-            pass  # this means message wasn't subscriptable'
-        except PyRobotControllerError:
-            pass
-        except RoombaError:
-            pass
-    except ValueError:
-        #This means the json failed to decode correctly
-        #Should be logged
+        getattr(roomba, cmd)(*args)  # Tell roomba what to do
+    except AttributeError:
+        pass  # should log bad msg
+    except PyRobotControllerError:
+        pass
+    except RoombaError:
         pass
 
-
-def main():
-    roomba = Create(BluetoothController('00:0A:3A:2E:C9:BB'))
+def main(address=ROOMBA_ADDRESS, queue=DRIVE_QUEUE) -> "IO ()":
+    roomba = Create(BluetoothController(address))
     roomba.control()
-    connection = amqp.Connection(HOST)
-    channel = connection.channel()
-    channel.queue_declare(queue=DRIVE_QUEUE)
-    channel.basic_consume(queue=DRIVE_QUEUE, callback=partial(drive, roomba))
-
-    while channel.callbacks:
-        channel.wait()
+    Driver(callback=lambda cmd, *args: getattr(roomba, cmd)(*args), 
+          queue=queue).drive()
