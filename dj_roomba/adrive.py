@@ -1,13 +1,14 @@
 from os.path import exists
+from os import environ
 from subprocess import check_call
 from functools import partial
 from .drive import Driver
 
 DRIVE_QUEUE = 'audio.drive'
-CTL_PATH = '~/.config/pianobar/ctl'
+CTL_PATH = '{}/.config/pianobar/ctl'.format(environ['HOME'])
 COMMANDS = {'p', 'n', '^', '(', ')'}
 
-def callback(ctl:file, cmd:str) -> "IO ()":
+def callback(ctl:'filet', cmd:str) -> "IO ()":
     if cmd not in COMMANDS:
         return
     ctl.write(cmd)

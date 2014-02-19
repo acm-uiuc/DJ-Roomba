@@ -15,8 +15,9 @@ setup(
     entry_points= {
         'console_scripts': [
             'roomba_drive = dj_roomba.rdrive:main',
-            'roomba_joystick = dj_roomba.joystick:main',
-            'turrent_drive = dj_roomba.tdrive:main', 
+            'joystick = dj_roomba.joystick:main',
+            'turrent_drive = dj_roomba.tdrive:mapin', 
+            'audio_drive = dj_roomba.adrive:main'
         ]
     },
     data_files = [('configs', ['configs/ps4.json'])],

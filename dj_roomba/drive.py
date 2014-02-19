@@ -24,10 +24,9 @@ class Driver(object):
         """
         try:
             args = json.loads(msg.body)
-            try:
-                self._callback(*args)
-            except TypeError:
-                logging.info(FORMAT_ERROR_MSG)
+            self._callback(*args)
+        except TypeError:
+            logging.info(FORMAT_ERROR_MSG)
         except ValueError:
             logging.info(DECODE_ERROR_MSG.format(msg))
 
