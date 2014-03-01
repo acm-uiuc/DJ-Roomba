@@ -2,7 +2,7 @@ from roomba.controllers import BluetoothController, PyRobotControllerError
 from roomba.roomba import Create, RoombaError
 from .drive import Driver
 
-DRIVE_QUEUE = 'drive'
+DRIVE_QUEUE = 'r.drive'
 ROOMBA_ADDRESS = '00:0A:3A:2E:C9:BB'
 
 def callback(roomba:Create, cmd:str, *args) -> "IO ()":

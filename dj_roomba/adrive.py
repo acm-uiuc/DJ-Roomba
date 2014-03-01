@@ -8,7 +8,7 @@ DRIVE_QUEUE = 'audio.drive'
 CTL_PATH = '{}/.config/pianobar/ctl'.format(environ['HOME'])
 COMMANDS = {'p', 'n', '^', '(', ')'}
 
-def callback(ctl:'filet', cmd:str) -> "IO ()":
+def callback(ctl:'file_t', cmd:str) -> "IO ()":
     if cmd not in COMMANDS:
         return
     ctl.write(cmd)
