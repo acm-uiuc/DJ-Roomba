@@ -8,6 +8,7 @@ from .joystick import Joystick
 HOST = 'localhost'
 DEVICE = '/dev/input/event13'
 ROOMBA_QUEUE = 'r.drive'
+TURRET_QUEUE = 't.drive'
 
 app = Joystick()
 
@@ -22,6 +23,27 @@ def turn(val):
 @app.register('btn_start', ROOMBA_QUEUE)
 def reset(_):
     return ('control',)
+
+@app.register('btn_west', TURRET_QUEUE)
+def left(_):
+    return ('left',)
+
+@app.register('btn_east', TURRET_QUEUE)
+def right(_):
+    return ('right',)
+
+@app.register('btn_north', TURRET_QUEUE)
+def up(_):
+    return ('up',)
+
+@app.register('btn_south', TURRET_QUEUE)
+def down(_):
+    return ('down',)
+
+@app.register('btn_tr2', TURRET_QUEUE)
+def fire(_):
+    return ('fire',)
+    
 
 def main():
     """Entry point for the joystick daemon"""
