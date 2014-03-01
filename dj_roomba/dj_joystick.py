@@ -16,7 +16,7 @@ def straight(val):
     return ('drive_straight', -val*300)
 
 @app.register('btn_dpad_right', ROOMBA_QUEUE)
-def drive(val):
+def turn(val):
     return ('drive', -val*300, 0)
 
 @app.register('btn_start', ROOMBA_QUEUE)
@@ -24,7 +24,7 @@ def reset(_):
     return ('control',)
 
 def main():
-    """Creates connection to amqp on HOST to channel DRIVE, """
+    """Entry point for the joystick daemon"""
     parser = ArgumentParser()
     parser.add_argument('--config', '-c', required=True)
     parser.add_argument('--host', default=HOST)
