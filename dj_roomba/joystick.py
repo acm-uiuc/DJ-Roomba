@@ -33,10 +33,8 @@ class Joystick(object):
         values = (event.value for event in events_v)
         codes = dict_filter((str(event.code) for event in events_e), config)
         cmd_queue_lis = dict_filter(codes, self.event_map)
-        print(self.event_map)
 
         for (cmd, queue), value in zip(cmd_queue_lis, values):
-            print(cmd(value))
             yield amqp.Message(json.dumps(cmd(value))), queue
 
     def run(self, broker:str, device:str, config_path:str) -> 'IO ()':
