@@ -3,9 +3,13 @@ Handles joy stick communication to amqp broker
 """
 import json
 from functools import wraps
+from itertools import tee
 
 import amqp
 import evdev
+
+def dict_filter(lis, dic):
+    return (dic[elem] for elem in lis if elem in dic)
 
 class Joystick(object):
     """Used to register and read evdev events for mapping to amqp queues."""
@@ -22,21 +26,18 @@ class Joystick(object):
             return _decorator
         self.queues.add(queue)
         return decorator
-
+        
     def messages(self, events:[evdev.events], config:dict) -> [amqp.Message]:
         """Maps the events from evdev events to amp msgs based on event_map"""
-        event_pairs = ((str(event.code), event.value) for event in events)
-        event_pairs = ((config[code], val) for code, val in event_pairs 
-                       if code in config)
-        event_pairs = ((code, val) for code, val in event_pairs 
-                       if code in self.event_map)
-        print(self.event_map.keys())
-        print(config)
+        events_v, events_e = tee(events)        
+        values = (event.value for event in events_v)
+        codes = dict_filter((str(event.code) for event in events_e), config)
+        cmd_queue_lis = dict_filter(codes, self.event_map)
+        print(self.event_map)
 
-        for code, value in event_pairs:
-            func, queue = self.event_map[code]
-            print(func(value))
-            yield amqp.Message(json.dumps(func(value))), queue
+        for (cmd, queue), value in zip(cmd_queue_lis, values):
+            print(cmd(value))
+            yield amqp.Message(json.dumps(cmd(value))), queue
 
     def run(self, broker:str, device:str, config_path:str) -> 'IO ()':
         """Executes monitoring loop"""
