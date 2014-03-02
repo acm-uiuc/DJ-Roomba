@@ -1,2 +1,1 @@
--e git+https://github.com/mvcisback/pyroomba.git#egg=pyroomba
 -e .
