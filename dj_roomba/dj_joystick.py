@@ -12,38 +12,40 @@ TURRET_QUEUE = 't.drive'
 
 app = Joystick()
 
-@app.register('btn_dpad_up', ROOMBA_QUEUE)
-def straight(val):
-    return ('drive_straight', -val*300)
+@app.register('BTN_DPAD_DOWN', ROOMBA_QUEUE, weight=-1)
+@app.register('BTN_DPAD_UP', ROOMBA_QUEUE, weight=1)
+def up(val):
+    return ('drive_straight', val*300)
 
-@app.register('btn_dpad_right', ROOMBA_QUEUE)
+
+@app.register('BTN_DPAD_LEFT', ROOMBA_QUEUE, weight=-1)
+@app.register('BTN_DPAD_RIGHT', ROOMBA_QUEUE, weight=1)
 def turn(val):
     return ('drive', -val*300, 0)
 
-@app.register('btn_start', ROOMBA_QUEUE)
+@app.register('BTN_START', ROOMBA_QUEUE)
 def reset(_):
     return ('control',)
-
-@app.register('btn_west', TURRET_QUEUE)
+ 
+@app.register('BTN_WEST', TURRET_QUEUE)
 def left(_):
     return ('left',)
-
-@app.register('btn_east', TURRET_QUEUE)
+ 
+@app.register('BTN_EAST', TURRET_QUEUE)
 def right(_):
     return ('right',)
-
-@app.register('btn_north', TURRET_QUEUE)
+ 
+@app.register('BTN_NORTH', TURRET_QUEUE)
 def up(_):
     return ('up',)
-
-@app.register('btn_south', TURRET_QUEUE)
+ 
+@app.register('BTN_SOUTH', TURRET_QUEUE)
 def down(_):
     return ('down',)
-
-@app.register('btn_tr2', TURRET_QUEUE)
+ 
+@app.register('BTN_TR2', TURRET_QUEUE)
 def fire(_):
     return ('fire',)
-    
 
 def main():
     """Entry point for the joystick daemon"""
@@ -52,4 +54,4 @@ def main():
     parser.add_argument('--host', default=HOST)
     parser.add_argument('--device', '-d', default=None)
     args = parser.parse_args()
-    app.run(args.broker, args.device, args.config)
+    app.run(args.host, args.device, args.config)

@@ -1,0 +1,12 @@
+{
+    "292": "BTN_DPAD_UP",
+    "294": "BTN_DPAD_DOWN",
+    "295": "BTN_DPAD_LEFT",
+    "293": "BTN_DPAD_RIGHT",
+    "291": "BTN_START",
+    "301": "BTN_EAST",
+    "303": "BTN_WEST",
+    "302": "BTN_SOUTH",
+    "300": "BTN_NORTH",
+    "297": "BTN_TR2"
+}

@@ -13,22 +13,30 @@ class Joystick(object):
         self.event_map = {}
         self.queues = set()
 
-    def register(self, code:int, queue:str):
+    def register(self, code:int, queue:str, *, weight:int=1):
         """Register's event to be mapped by function on a queue"""
-        @wraps
         def decorator(func):
-            self.queues.add(queue)
-            self.event_map[code] = func
-            return func
+            def _decorator(val):
+                return func(val*weight)
+            self.event_map[code] = (_decorator, queue)
+            return _decorator
+        self.queues.add(queue)
         return decorator
 
     def messages(self, events:[evdev.events], config:dict) -> [amqp.Message]:
         """Maps the events from evdev events to amp msgs based on event_map"""
-        codes_and_values = ((config[str(event.code)], event.value) for event
-                            in events if event.code in self.event_map)
-        for code, value in codes_and_values:
-            command = events[code](value)
-            yield amqp.Message(json.dumps(command)), self.event_map[code]
+        event_pairs = ((str(event.code), event.value) for event in events)
+        event_pairs = ((config[code], val) for code, val in event_pairs 
+                       if code in config)
+        event_pairs = ((code, val) for code, val in event_pairs 
+                       if code in self.event_map)
+        print(self.event_map.keys())
+        print(config)
+
+        for code, value in event_pairs:
+            func, queue = self.event_map[code]
+            print(func(value))
+            yield amqp.Message(json.dumps(func(value))), queue
 
     def run(self, broker:str, device:str, config_path:str) -> 'IO ()':
         """Executes monitoring loop"""
