@@ -1,14 +1,16 @@
 """
 Handles joy stick communication to amqp broker
 """
+
 import json
-from functools import wraps
 from itertools import tee
 
 import amqp
 import evdev
 
-def dict_filter(lis, dic):
+def apply_dict(lis:list, dic:dict) -> list:
+    """Takes an iterable and maps each element to corrosponding entry in
+    dictionary if it exists."""
     return (dic[elem] for elem in lis if elem in dic)
 
 class Joystick(object):
@@ -19,6 +21,7 @@ class Joystick(object):
 
     def register(self, code:int, queue:str, *, weight:int=1):
         """Register's event to be mapped by function on a queue"""
+        # pylint: disable=C0111
         def decorator(func):
             def _decorator(val):
                 return func(val*weight)
@@ -26,13 +29,13 @@ class Joystick(object):
             return _decorator
         self.queues.add(queue)
         return decorator
-        
+
     def messages(self, events:[evdev.events], config:dict) -> [amqp.Message]:
         """Maps the events from evdev events to amp msgs based on event_map"""
-        events_v, events_e = tee(events)        
+        events_v, events_c = tee(events)
         values = (event.value for event in events_v)
-        codes = dict_filter((str(event.code) for event in events_e), config)
-        cmd_queue_lis = dict_filter(codes, self.event_map)
+        codes = apply_dict((str(event.code) for event in events_c), config)
+        cmd_queue_lis = apply_dict(codes, self.event_map)
 
         for (cmd, queue), value in zip(cmd_queue_lis, values):
             yield amqp.Message(json.dumps(cmd(value))), queue

@@ -10,13 +10,13 @@ DEVICE = '/dev/input/event13'
 ROOMBA_QUEUE = 'r.drive'
 TURRET_QUEUE = 't.drive'
 
+# pylint: disable=C0111, C0103
 app = Joystick()
 
 @app.register('BTN_DPAD_DOWN', ROOMBA_QUEUE, weight=-1)
 @app.register('BTN_DPAD_UP', ROOMBA_QUEUE, weight=1)
-def up(val):
+def straight(val):
     return ('drive_straight', val*300)
-
 
 @app.register('BTN_DPAD_LEFT', ROOMBA_QUEUE, weight=-1)
 @app.register('BTN_DPAD_RIGHT', ROOMBA_QUEUE, weight=1)
@@ -26,26 +26,27 @@ def turn(val):
 @app.register('BTN_START', ROOMBA_QUEUE)
 def reset(_):
     return ('control',)
- 
+
 @app.register('BTN_WEST', TURRET_QUEUE)
 def left(_):
     return ('left',)
- 
+
 @app.register('BTN_EAST', TURRET_QUEUE)
 def right(_):
     return ('right',)
- 
+
 @app.register('BTN_NORTH', TURRET_QUEUE)
 def up(_):
     return ('up',)
- 
+
 @app.register('BTN_SOUTH', TURRET_QUEUE)
 def down(_):
     return ('down',)
- 
+
 @app.register('BTN_TR2', TURRET_QUEUE)
 def fire(_):
     return ('fire',)
+#pylint: enable=C0111, C0103
 
 def main():
     """Entry point for the joystick daemon"""

@@ -22,6 +22,7 @@ Based on http://www.raspberrypi-spy.co.uk
 """
 
 import time
+# pylint: disable=E0611, F0401
 import RPi.GPIO as GPIO
 
 # Define GPIO to LCD mapping
@@ -80,23 +81,21 @@ def toggle_enable_pin(lcd_e=LCD_PINS['E'], e_delay=E_DELAY, e_pulse=E_PULSE):
     GPIO.output(lcd_e, False)
     time.sleep(e_delay)
 
-class LCDDisplay(object):
-    """Class wrapping interactions with lcd display"""
-    def __init__(self, ):
-        """inits lcd display"""
-        GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
-        for pin in LCD_PINS.values():
-            GPIO.setup(pin, GPIO.OUT)
-        for byte in [0x33, 0x32, 0x28, 0x0C, 0x06, 0x01]:
-            lcd_byte(byte, LCD_CMD)
+def display(msg) -> None:
+    """displays msg on the lcd"""
+    lines = msg.splitlines()
+    for _lines in zip(lines[::2], lines[1::2]):
+        for lcd_line, line in zip([LCD_LINE_1, LCD_LINE_2], _lines):
+            display_line(line, lcd_line)
 
-    def display(self, msg):
-        """displays msg on the lcd"""
-        lines = msg.splitlines()
-        for _lines in zip(lines[::2], lines[1::2]):
-            for lcd_line, line in zip([LCD_LINE_1, LCD_LINE_2], _lines):
-                display_line(line, lcd_line)
+def init_display():
+    """inits lcd display"""
+    GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
+    for pin in LCD_PINS.values():
+        GPIO.setup(pin, GPIO.OUT)
+    for byte in [0x33, 0x32, 0x28, 0x0C, 0x06, 0x01]:
+        lcd_byte(byte, LCD_CMD)
 
 if __name__ == '__main__':
-    LCD = LCDDisplay()
-    LCD.display("Marcell V.C\nFTW!!!!!!\nOMG\nOMG")
+    init_display()
+    display("Marcell V.C\nFTW!!!!!!\nOMG\nOMG")
