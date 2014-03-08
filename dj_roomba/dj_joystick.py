@@ -3,7 +3,10 @@ Handles joy stick communication to roomba
 """
 
 from argparse import ArgumentParser
+from functools import wraps
+
 from .joystick import Joystick
+
 
 HOST = 'localhost'
 DEVICE = '/dev/input/event13'
@@ -13,16 +16,16 @@ AUDIO_QUEUE = 'a.drive'
 
 # pylint: disable=C0111, C0103
 app = Joystick()
-
-@app.register('BTN_DPAD_DOWN', ROOMBA_QUEUE, weight=-1)
-@app.register('BTN_DPAD_UP', ROOMBA_QUEUE, weight=1)
+        
+@app.register('BTN_DPAD_DOWN', ROOMBA_QUEUE, weight=-300)
+@app.register('BTN_DPAD_UP', ROOMBA_QUEUE, weight=300)
 def straight(val):
-    return ('drive_straight', val*300)
+    return ('drive_straight', val)
 
-@app.register('BTN_DPAD_LEFT', ROOMBA_QUEUE, weight=-1)
-@app.register('BTN_DPAD_RIGHT', ROOMBA_QUEUE, weight=1)
+@app.register('BTN_DPAD_LEFT', ROOMBA_QUEUE, weight=-300)
+@app.register('BTN_DPAD_RIGHT', ROOMBA_QUEUE, weight=300)
 def turn(val):
-    return ('drive', -val*300, 0)
+    return ('drive', val, 0)
 
 @app.register('BTN_START', ROOMBA_QUEUE)
 def reset(_):
@@ -44,13 +47,25 @@ def up(val):
 def down(val):
     return ('down', val)
 
-@app.register('BTN_TR2', TURRET_QUEUE)
+@app.register('FIRE', TURRET_QUEUE)
 def fire(val):
     return ('fire', val)
 
-@app.register('BTN_A', AUDIO_QUEUE)
-def next(val):
-    return ('noop',) if val == 0 else ('n', )
+@app.register('NEXT', AUDIO_QUEUE, noop_zero=True)
+def next(_):
+    return ('n', )
+
+@app.register('PAUSE', AUDIO_QUEUE, noop_zero=True)
+def pause(_):
+    return ('p', )
+
+@app.register('VOL_UP', AUDIO_QUEUE, noop_zero=True)
+def vol_up(_):
+    return (')', )
+
+@app.register('VOL_DOWN', AUDIO_QUEUE, noop_zero=True)
+def vol_down(_):
+    return ('(', )
 
 #pylint: enable=C0111, C0103
 

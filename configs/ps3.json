@@ -8,5 +8,9 @@
     "303": "BTN_WEST",
     "302": "BTN_SOUTH",
     "300": "BTN_NORTH",
-    "297": "BTN_TR2"
+    "297": "FIRE",
+    "296": "NEXT",
+    "288": "PAUSE",
+    "299": "VOL_UP",
+    "298": "VOL_DOWN"
 }
