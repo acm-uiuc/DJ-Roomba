@@ -47,11 +47,11 @@ class Joystick(object):
         connection = amqp.Connection(broker)
         channel = connection.channel()
         for queue in self.queues:
-            channel.queue_declare(queue=queue, )
+            channel.queue_declare(queue=queue, arguments=QUEUE_ARGS)
 
         device = evdev.device.InputDevice(device)
         with open(config_path, 'r') as handle:
             config = json.load(handle)
 
         for msg, queue in self.messages(device.read_loop(), config):
-            channel.basic_publish(msg, routing_key=queue, args={queue_args})
+            channel.basic_publish(msg, routing_key=queue)
