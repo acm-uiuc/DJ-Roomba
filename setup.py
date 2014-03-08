@@ -16,7 +16,7 @@ setup(
         'console_scripts': [
             'roomba_drive = dj_roomba.rdrive:main',
             'joystick = dj_roomba.dj_joystick:main',
-            'turrent_drive = dj_roomba.tdrive:mapin', 
+            'turrent_drive = dj_roomba.tdrive:main', 
             'audio_drive = dj_roomba.adrive:main'
         ]
     },

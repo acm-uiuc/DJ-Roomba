@@ -8,6 +8,8 @@ from itertools import tee
 import amqp
 import evdev
 
+QUEUE_ARGS = {'max-length': 2}
+
 def apply_dict(lis:list, dic:dict) -> list:
     """Takes an iterable and maps each element to corrosponding entry in
     dictionary if it exists."""
@@ -45,11 +47,11 @@ class Joystick(object):
         connection = amqp.Connection(broker)
         channel = connection.channel()
         for queue in self.queues:
-            channel.queue_declare(queue=queue)
+            channel.queue_declare(queue=queue, )
 
         device = evdev.device.InputDevice(device)
         with open(config_path, 'r') as handle:
             config = json.load(handle)
 
         for msg, queue in self.messages(device.read_loop(), config):
-            channel.basic_publish(msg, routing_key=queue)
+            channel.basic_publish(msg, routing_key=queue, args={queue_args})

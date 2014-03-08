@@ -1,4 +1,13 @@
 {
-    "103": "BTN_DPAD_UP",
-    "104": "BTN_DPAD_DOWN"
+    "106": "BTN_DPAD_UP",
+    "105": "BTN_DPAD_DOWN",
+    "103": "BTN_DPAD_LEFT",
+    "108": "BTN_DPAD_RIGHT",
+    "316": "BTN_START",
+    "258": "BTN_EAST",
+    "257": "BTN_WEST",
+    "412": "BTN_SOUTH",
+    "407": "BTN_NORTH",
+    "305": "BTN_TR2",
+    "304": "BTN_A"
 }

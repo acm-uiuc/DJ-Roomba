@@ -15,11 +15,15 @@ def make_data(cmd:str) -> [int]:
     """Builds data list required by ctrl_transfer to turret"""
     return [0x02, CMD_BYTE[cmd]] + 6*[0]
 
-def send_cmd(ctrl_transfer:'[int] -> IO ()' , cmd:'str') -> 'IO ()':
+def send_cmd(ctrl_transfer:'[int] -> IO ()' , cmd:'str', val:int) -> 'IO ()':
     """Sends the command given to the turret over usb"""
+    if val == 0:
+        ctrl_transfer(data_or_wLength=make_data('stop'))
+        return
     ctrl_transfer(data_or_wLength=make_data(cmd))
-    time.sleep(3 if cmd == "fire" else 0.2)
-    ctrl_transfer(data_or_wLength=make_data('stop'))
+    if cmd == 'fire':
+        time.sleep(3.5)
+
 
 def main(queue:str=DRIVE_QUEUE) -> 'IO ()':
     """Reads from the t.drive queue for commands for the turret."""

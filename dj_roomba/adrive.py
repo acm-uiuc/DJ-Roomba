@@ -6,7 +6,7 @@ from subprocess import check_call
 from functools import partial
 from .drive import Driver
 
-DRIVE_QUEUE = 'audio.drive'
+DRIVE_QUEUE = 'a.drive'
 CTL_PATH = '{}/.config/pianobar/ctl'.format(environ['HOME'])
 COMMANDS = {'p', 'n', '^', '(', ')'}
 

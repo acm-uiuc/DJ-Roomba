@@ -9,6 +9,7 @@ HOST = 'localhost'
 DEVICE = '/dev/input/event13'
 ROOMBA_QUEUE = 'r.drive'
 TURRET_QUEUE = 't.drive'
+AUDIO_QUEUE = 'a.drive'
 
 # pylint: disable=C0111, C0103
 app = Joystick()
@@ -28,24 +29,29 @@ def reset(_):
     return ('control',)
 
 @app.register('BTN_WEST', TURRET_QUEUE)
-def left(_):
-    return ('left',)
+def left(val):
+    return ('left', val)
 
 @app.register('BTN_EAST', TURRET_QUEUE)
-def right(_):
-    return ('right',)
+def right(val):
+    return ('right', val)
 
 @app.register('BTN_NORTH', TURRET_QUEUE)
-def up(_):
-    return ('up',)
+def up(val):
+    return ('up', val)
 
 @app.register('BTN_SOUTH', TURRET_QUEUE)
-def down(_):
-    return ('down',)
+def down(val):
+    return ('down', val)
 
 @app.register('BTN_TR2', TURRET_QUEUE)
-def fire(_):
-    return ('fire',)
+def fire(val):
+    return ('fire', val)
+
+@app.register('BTN_A', AUDIO_QUEUE)
+def next(val):
+    return ('noop',) if val == 0 else ('n', )
+
 #pylint: enable=C0111, C0103
 
 def main():
