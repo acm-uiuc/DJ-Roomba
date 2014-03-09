@@ -21,8 +21,8 @@ app = Joystick()
 def straight(val):
     return ('drive_straight', val)
 
-@app.register('BTN_DPAD_LEFT', ROOMBA_QUEUE, weight=-300)
-@app.register('BTN_DPAD_RIGHT', ROOMBA_QUEUE, weight=300)
+@app.register('BTN_DPAD_LEFT', ROOMBA_QUEUE, weight=300)
+@app.register('BTN_DPAD_RIGHT', ROOMBA_QUEUE, weight=-300)
 def turn(val):
     return ('drive', val, 0)
 
