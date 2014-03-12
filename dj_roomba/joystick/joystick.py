@@ -21,7 +21,7 @@ class Joystick(object):
         self.queues.add(queue)
         return decorator
 
-    def messages(self, events:[evdev.events], config:dict) -> [amqp.Message]:
+    def messages(self, events:['events'], config:dict) -> [str]:
         """Maps the events from evdev events to amp msgs based on event_map"""
         events2 = ((config[event.code], event.value) for event
                    in events if event.code in config)

@@ -8,7 +8,7 @@ import evdev
 
 QUEUE_ARGS = {'max-length': 2}
 
-def sink(channel:amqp.Channel, source:[(msg, queue)]) -> "IO ()":
+def sink(channel:amqp.Channel, source:[('msg', 'queue')]) -> "IO ()":
     """Amqp sink"""
     for msg, queue in ((amqp.Message(msg), queue) for msg, queue in source):
         channel.basic_publish(msg, routing_key=queue)
