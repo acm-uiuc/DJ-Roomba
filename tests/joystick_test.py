@@ -1,4 +1,4 @@
-from dj_roomba.joystick import Joystick
+from dj_roomba.joystick import Joystick, EvdevRabbitJS
 from unittest import TestCase, main
 from unittest.mock import patch, MagicMock
 

@@ -4,17 +4,16 @@ Handles joy stick communication to roomba
 
 from argparse import ArgumentParser
 
-from .joystick import Joystick
+from .joystick  import EvdevRabbitJS
 
 
 HOST = 'localhost'
-DEVICE = '/dev/input/event13'
 ROOMBA_QUEUE = 'r.drive'
 TURRET_QUEUE = 't.drive'
 AUDIO_QUEUE = 'a.drive'
 
 # pylint: disable=C0111, C0103
-app = Joystick()
+app = EvdevRabbitJS()
 
 @app.register('BTN_DPAD_DOWN', ROOMBA_QUEUE, weight=-300)
 @app.register('BTN_DPAD_UP', ROOMBA_QUEUE, weight=300)
@@ -65,7 +64,6 @@ def vol_up(_):
 @app.register('VOL_DOWN', AUDIO_QUEUE, noop_zero=True)
 def vol_down(_):
     return ('(', )
-
 #pylint: enable=C0111, C0103
 
 def main():

@@ -2,12 +2,7 @@
 Handles joy stick communication to amqp broker
 """
 
-import json
-
-import amqp
-import evdev
-
-QUEUE_ARGS = {'max-length': 2}
+from json import dumps, load
 
 class Joystick(object):
     """Used to register and read evdev events for mapping to amqp queues."""
@@ -35,18 +30,11 @@ class Joystick(object):
         for (cmd, queue, noop_zero), value in cmd_val_lis:
             if noop_zero and value == 0:
                 continue
-            yield amqp.Message(json.dumps(cmd(value))), queue
+            yield dumps(cmd(value)), queue
 
-    def run(self, broker:str, device:str, config_path:str) -> 'IO ()':
+    def run(self, config_path:str, source, sink) -> 'IO ()':
         """Executes monitoring loop"""
-        connection = amqp.Connection(broker)
-        channel = connection.channel()
-        for queue in self.queues:
-            channel.queue_declare(queue=queue, arguments=QUEUE_ARGS)
-
-        device = evdev.device.InputDevice(device)
         with open(config_path, 'r') as handle:
-            config = {int(key): val for key, val in json.load(handle).items()}
+            config = {int(key): val for key, val in load(handle).items()}
 
-        for msg, queue in self.messages(device.read_loop(), config):
-            channel.basic_publish(msg, routing_key=queue)
+        sink(self.messages(source, config))
