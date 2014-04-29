@@ -1,8 +1,7 @@
 """
 Handles joy stick communication to roomba
 """
-
-from argparse import ArgumentParser
+import click
 
 from .joystick  import EvdevRabbitJS
 
@@ -66,11 +65,10 @@ def vol_down(_):
     return ('(', )
 #pylint: enable=C0111, C0103
 
-def main():
+@click.command()
+@click.option('--config', '-c', required=True)
+@click.option('--host', '-h', required=True, default=HOST)
+@click.option('--device', '-d', required=True)
+def main(config, host, device):
     """Entry point for the joystick daemon"""
-    parser = ArgumentParser()
-    parser.add_argument('--config', '-c', required=True)
-    parser.add_argument('--host', default=HOST)
-    parser.add_argument('--device', '-d', default=None)
-    args = parser.parse_args()
-    app.run(args.host, args.device, args.config)
+    app.run(config, host, device)

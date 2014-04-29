@@ -22,6 +22,6 @@ def main(ctl_path:str=CTL_PATH, queue=DRIVE_QUEUE) -> "IO ()":
     if not exists(ctl_path):
         with open('/dev/null', 'w') as null:
             check_call(['pianoctl'], stdout=null)
-    ctl = open(ctl_path, 'w')
-    Driver(callback=partial(callback, ctl), queue=queue).drive()
-    ctl.close()
+
+    with open(ctl_path, 'w') as ctl:
+        Driver(callback=partial(callback, ctl), queue=queue).drive()
