@@ -6,6 +6,8 @@ from subprocess import check_call
 from functools import partial
 from .drive import Driver
 
+import click
+
 DRIVE_QUEUE = 'a.drive'
 CTL_PATH = '{}/.config/pianobar/ctl'.format(environ['HOME'])
 COMMANDS = {'p', 'n', '^', '(', ')'}
@@ -17,7 +19,11 @@ def callback(ctl:'file_t', cmd:str) -> "IO ()":
     ctl.write(cmd)
     ctl.flush()
 
-def main(ctl_path:str=CTL_PATH, queue=DRIVE_QUEUE) -> "IO ()":
+
+@click.command()
+@click.option('--ctl_path', default=CTL_PATH)
+@click.option('--queue', default=DRIVE_QUEUE)
+def main(ctl_path:str, queue:str) -> "IO ()":
     """daemon for a.drive queue consumption"""
     if not exists(ctl_path):
         with open('/dev/null', 'w') as null:

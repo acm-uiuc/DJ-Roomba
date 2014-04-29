@@ -2,7 +2,9 @@
 
 from roomba.controllers import BluetoothController, PyRobotControllerError
 from roomba.roomba import Create, RoombaError
+
 from .drive import Driver
+import click
 
 DRIVE_QUEUE = 'r.drive'
 ROOMBA_ADDRESS = '00:0A:3A:2E:C9:BB'
@@ -18,7 +20,10 @@ def callback(roomba:Create, cmd:str, *args) -> "IO ()":
     except RoombaError:
         pass
 
-def main(address=ROOMBA_ADDRESS, queue=DRIVE_QUEUE) -> "IO ()":
+@click.command()
+@click.option('--address', default=ROOMBA_ADDRESS)
+@click.option('--queue', default=DRIVE_QUEUE)
+def main(address:str, queue:str) -> "IO ()":
     """Listens on the r.drive queue for roomba commands"""
     roomba = Create(BluetoothController(address))
     roomba.control()

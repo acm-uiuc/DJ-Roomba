@@ -3,6 +3,7 @@ import time
 from functools import partial
 
 import usb.core
+import click
 from .drive import Driver
 
 DRIVE_QUEUE = 't.drive'
@@ -25,6 +26,8 @@ def send_cmd(ctrl_transfer:'[int] -> IO ()' , cmd:'str', val:int) -> 'IO ()':
         time.sleep(3.5)
 
 
+@click.command()
+@click.option('--queue', default=DRIVE_QUEUE)
 def main(queue:str=DRIVE_QUEUE) -> 'IO ()':
     """Reads from the t.drive queue for commands for the turret."""
     dev = usb.core.find(idVendor=VENDOR, idProduct=PRODUCT)
