@@ -2,6 +2,7 @@ import sys
 from Queue import Queue
 from ctypes import POINTER, c_ubyte, c_void_p, c_ulong, cast
 
+# Taken from: http://freshfoo.com/blog/pulseaudio_monitoring
 # From https://github.com/Valodim/python-pulseaudio
 from pulseaudio.lib_pulseaudio import *
 
