@@ -3,8 +3,8 @@ with import <nixpkgs> {};
 python3Packages.buildPythonPackage rec {
     name = "djroomba-0.1";
     src = fetchurl {
-        url = "https://github.com/acm-uiuc/DJ-Roomba/archive/master.zip";
-        sha256 = "638bbb47ca7a436d8eecd345e5efe5ff0f121276aab91f735bfb686b77e59bc3";
+        url = "https://github.com/acm-uiuc/DJ-Roomba/archive/master.tar.gz";
+        sha256 = "1f0aa06d0eaceeb7474278e3dadbcc18a731803f4d2da377822a88bdabfebe57";
     };
 
     propagatedBuildInputs = with python3Packages; [
