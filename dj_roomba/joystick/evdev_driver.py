@@ -13,6 +13,8 @@ def sink(channel:amqp.Channel, source:[('msg', 'queue')]) -> "IO ()":
     for msg, queue in ((amqp.Message(msg), queue) for msg, queue in source):
         channel.basic_publish(msg, routing_key=queue)
 
+
+# pylint: disable=R0903
 class EvdevRabbitJS(Joystick):
     """Provides convenience wrapper around Joystick using evdev and RabbitMQ"""
     def run(self, config_path:str, broker:str, device:str) -> "IO ()":

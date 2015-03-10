@@ -23,7 +23,8 @@ class Driver(object):
         except TypeError:
             logging.info(FORMAT_ERROR_MSG)
         except ValueError:
-            logging.info(DECODE_ERROR_MSG.format(msg))
+            error_msg = DECODE_ERROR_MSG.format(msg)
+            logging.info(error_msg)
 
 
     def drive(self) -> "IO ()":

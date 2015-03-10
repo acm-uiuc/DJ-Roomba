@@ -1,3 +1,9 @@
+"""
+Module for controlling lights.
+
+Listens on the audio_level.sensor queue
+"""
+
 from __future__ import print_function
 
 import amqp
@@ -10,7 +16,7 @@ def drive_lights(cmd):
     """Call back for controlling lights based on audio levels."""
     val = cmd.body // len(PINS)
     pin_vals = [(pin, 1) for i, pin in enumerate(PINS) if val > BINS*i]
-    
+
     set_pins(pin_vals)
 
 
