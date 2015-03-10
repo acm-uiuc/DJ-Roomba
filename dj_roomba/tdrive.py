@@ -10,7 +10,7 @@ DRIVE_QUEUE = 't.drive'
 REQUEST_TYPE, REQUEST = 0x21, 0x09
 VENDOR, PRODUCT = 0x2123, 0x1010
 CMD_BYTE = {'down': 0x01, 'up': 0x02, 'left': 0x04, 'right': 0x08,
-           'stop': 0x20, 'fire': 0x10}
+            'stop': 0x20, 'fire': 0x10}
 
 def make_data(cmd:str) -> [int]:
     """Builds data list required by ctrl_transfer to turret"""
