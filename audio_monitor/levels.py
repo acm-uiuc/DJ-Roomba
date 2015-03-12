@@ -9,7 +9,7 @@ import amqp
 from pulseaudio.lib_pulseaudio import *
 
 # edit to match your sink
-SINK_NAME = 'alsa_output.pci-0000_00_1b.0.analog-stereo'
+SINK_NAME = 'alsa_output.usb-0d8c_C-Media_USB_Headphone_Set-00-Set.analog-stereo'
 METER_RATE = 10
 MAX_SAMPLE_VALUE = 127
 DISPLAY_SCALE = 2
