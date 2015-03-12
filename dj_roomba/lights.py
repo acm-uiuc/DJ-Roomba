@@ -8,7 +8,7 @@ from __future__ import print_function
 
 from subprocess import check_output
 
-from lights import echo
+from sh import echo
 import amqp
 QUEUE = "audio_level.sensor"
 

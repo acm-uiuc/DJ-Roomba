@@ -2,16 +2,19 @@ import sys
 from Queue import Queue
 from ctypes import POINTER, c_ubyte, c_void_p, c_ulong, cast
 
+import amqp
+
 # Taken from: http://freshfoo.com/blog/pulseaudio_monitoring
 # From https://github.com/Valodim/python-pulseaudio
 from pulseaudio.lib_pulseaudio import *
 
 # edit to match your sink
 SINK_NAME = 'alsa_output.pci-0000_00_1b.0.analog-stereo'
-METER_RATE = 344
+METER_RATE = 10
 MAX_SAMPLE_VALUE = 127
 DISPLAY_SCALE = 2
 MAX_SPACES = MAX_SAMPLE_VALUE >> DISPLAY_SCALE
+QUEUE = "audio_level.sensor"
 
 class PeakMonitor(object):
 
@@ -100,9 +103,18 @@ class PeakMonitor(object):
         pa_stream_drop(stream)
 
 def main():
+    
+
+    
     monitor = PeakMonitor(SINK_NAME, METER_RATE)
     for sample in monitor:
         sample = sample >> DISPLAY_SCALE
+
+        amqp.Connection("localhost")
+        channel = connection.channel()
+        channel.queue_declare(queue=QUEUE)
+        channel.basic_publish(amqp.Message(str(sample)), routing_key=queue)
+        
         bar = '>' * sample
         spaces = ' ' * (MAX_SPACES - sample)
         print ' %3d %s%s\r' % (sample, bar, spaces),
