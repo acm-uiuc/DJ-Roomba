@@ -18,7 +18,8 @@ setup(
         'pyusb',
         'click',
         'pyserial',
-        'python-mpd2'
+        'python-mpd2',
+        'sh'
     ],
     entry_points= {
         'console_scripts': [
