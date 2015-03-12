@@ -8,6 +8,7 @@ from __future__ import print_function
 
 from subprocess import check_output
 
+from lights import echo
 import amqp
 QUEUE = "audio_level.sensor"
 
@@ -25,19 +26,15 @@ def drive_lights(cmd):
 def set_pins(pin_vals: "[(pin, val)]") -> "IO ()":
     """Set pins to corresponding value."""
     for pin, val in pin_vals:
-        echo("/sys/class/gpio/gpio{}/value".format(pin), val)
-
-def echo(val, path):
-    "echo val into file"
-    return check_output("echo {} > {}".format(val, path))
+        echo(val, _out="/sys/class/gpio/gpio{}/value".format(pin))
 
 
 def setup_gpio() -> "IO ()":
     """Setup pins to control lights."""
     for pin in PINS:
-        echo("/sys/class/gpio/export", str(pin))
-        echo("/sys/class/gpio/gpio{}/direction".format(pin), "out")
-        echo("/sys/class/gpio/gpio{}/value".format(pin), "1")
+        echo(str(pin), _out="/sys/class/gpio/export")
+        echo("out", _out="/sys/class/gpio/gpio{}/direction".format(pin))
+        echo("1", _out="/sys/class/gpio/gpio{}/value".format(pin))
 
 
 def main():
