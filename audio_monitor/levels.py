@@ -110,7 +110,7 @@ def main():
     for sample in monitor:
         sample = sample >> DISPLAY_SCALE
 
-        amqp.Connection("localhost")
+        connection = amqp.Connection("localhost")
         channel = connection.channel()
         channel.queue_declare(queue=QUEUE)
         channel.basic_publish(amqp.Message(str(sample)), routing_key=queue)
